@@ -5,12 +5,13 @@ using System.IO;
 using System.Net;
 using System.Text;
 
+
 namespace LojaAPIClient {
 
     public class Program {
 
         //  URL Base
-        private const string URL = "http://localhost:60206/api/carrinho/2";
+        private const string URL = "http://localhost:60206/api/carrinho/1/produto/6237";
 
         //  Métodos
         private const string GET    = "GET";
@@ -27,13 +28,15 @@ namespace LojaAPIClient {
         //  XML enviado no POST
         private static string xml = string.Empty;
 
-        public static void Main(string[] args) {
-            requestGET();
+        //  public static void Main(string[] args) {
+            //  requestGET();
             //  requestPOST();
             //  requestGETXml();
             //  requestPOSTXml();
             //  requestPOSTWithResponseMessage();
-        }
+            //  requestDELETE();
+            //  requestPUT();
+        //  }
 
         //  Requisição GET para um WebService
         private static void requestGET() {
@@ -99,15 +102,6 @@ namespace LojaAPIClient {
             }
             Console.Write(body);
             Console.Read();
-
-            //  Testar o serializer
-            Produto videogame = new Produto(77, "Xbox One", 2, 3);
-            List<Produto> produtos = new List<Produto>();
-            produtos.Add(videogame);
-            Carrinho carrinho = new Carrinho();
-            carrinho.Endereco = "Comerciante José Formiga de Assis, 77";
-            carrinho.Id = 2;
-            carrinho.Produtos = produtos;
         }
 
         private static void requestGETXml() {
@@ -126,7 +120,7 @@ namespace LojaAPIClient {
         }
 
         private static void requestPOSTXml() {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(URL);
             request.Method = POST;
             request.Accept = "application/xml";
             request.ContentType = "application/xml";
@@ -147,7 +141,7 @@ namespace LojaAPIClient {
         }
 
         private static void requestPOSTWithResponseMessage() {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(URL);
             request.Method = POST;
             request.Accept = "application/json";
             request.ContentType = "application/json";
@@ -158,11 +152,55 @@ namespace LojaAPIClient {
 
             request.GetRequestStream().Write(jsonBytes, 0, jsonBytes.Length);
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            HttpWebResponse response = (HttpWebResponse) request.GetResponse();
 
             Console.WriteLine(response.StatusCode);
             Console.WriteLine(response.Headers["Location"]);
             Console.ReadLine();
         }
+
+        private static void requestDELETE() {
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(URL);
+            request.Method = DELETE;
+            request.Accept = "application/json";
+
+            HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+
+            Console.Write(response.StatusCode);
+            Console.Read();
+        }
+
+        private static void requestPUT() {
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(URL);
+            request.Method = PUT;
+            request.ContentType = "application/json";
+            json = "{'Id': 6237,'Preco': 1500,'Nome': 'Atualizou','Quantidade': 15}";
+            byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
+            request.GetRequestStream().Write(jsonBytes, 0, jsonBytes.Length);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            Console.Write(response.StatusCode);
+            Console.Read();
+        }
+
+        //  Enviar Objeto JSON
+        private static void requestObjectJSON() {
+            Produto videogame = new Produto(77, "Xbox One", 2, 3);
+            List<Produto> produtos = new List<Produto>();
+            produtos.Add(videogame);
+            Carrinho carrinho = new Carrinho();
+            carrinho.Endereco = "Comerciante José Formiga de Assis, 77";
+            carrinho.Id = 2;
+            carrinho.Produtos = produtos;
+        }
+
+        //  Enviar Objeto XML
+        private static void requestObjectXML() {
+
+        }
+
+        //  Deserializar JSON
+        //  Deserializar XML
+
+
     }
 }
